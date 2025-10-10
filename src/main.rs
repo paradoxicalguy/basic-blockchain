@@ -2,38 +2,16 @@ mod block;
 mod blockchain;
 
 use blockchain::Blockchain;
-use std::io::{self, Write};
 
 fn main() {
-    let mut chain = Blockchain::new();
-    let difficulty = 2; // mining difficulty
+    let mut my_chain = Blockchain::new();
 
-    loop {
-        print!("Enter command (add/print/validate/exit): ");
-        io::stdout().flush().unwrap();
+    my_chain.add_block("First transaction".to_string());
+    my_chain.add_block("Second transaction".to_string());
+    my_chain.add_block("Third transaction".to_string());
 
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).unwrap();
-        let input = input.trim();
+    println!("\n✅ Blockchain valid? {}", my_chain.is_chain_valid());
 
-        if input.starts_with("add ") {
-            let data = input[4..].to_string();
-            chain.add_block(data, difficulty);
-        } else if input == "print" {
-            for block in &chain.blocks {
-                println!("Block {}: {}", block.index, block.hash);
-                println!("  Data: {}", block.data);
-                println!("  Previous Hash: {}", block.previous_hash);
-                println!("  Nonce: {}", block.nonce);
-                println!("  Timestamp: {}", block.timestamp);
-            }
-        } else if input == "validate" {
-            let valid = chain.is_valid(difficulty);
-            println!("Blockchain valid? {}", valid);
-        } else if input == "exit" {
-            break;
-        } else {
-            println!("Unknown command!");
-        }
-    }
+    println!("\n🧱 Full chain:\n");
+    my_chain.print_chain();
 }
